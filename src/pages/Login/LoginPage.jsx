@@ -25,6 +25,7 @@ export default function LoginPage() {
 
       // Navigasi ke Menu
       navigate("/Menu");
+      // navigate("/Admin");
     }, 1500);
   };
 

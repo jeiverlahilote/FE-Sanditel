@@ -21,7 +21,7 @@ export default function DetailLaporan({ data }) {
     <Card className="p-4 sm:p-6 shadow-md rounded-2xl">
       <CardContent>
         <h2 className="text-xl sm:text-2xl font-semibold mb-6 text-center sm:text-left">
-          Detail Laporan
+          Detail Laporan Pekerjaan
         </h2>
 
         {/* Info utama */}

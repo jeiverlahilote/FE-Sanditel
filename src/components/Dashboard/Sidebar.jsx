@@ -1,3 +1,4 @@
+// src/components/Dashboard/Sidebar.jsx
 import { useNavigate } from "react-router-dom";
 import {
   FaBars,
@@ -12,19 +13,25 @@ import {
   FaArrowLeft,
 } from "react-icons/fa";
 
-export default function Sidebar({ isOpen, setIsOpen }) {
-  const navigate = useNavigate();
+// ✅ Menu default (untuk user biasa)
+const defaultMenus = [
+  { name: "Dashboard", icon: <FaChartPie />, path: "/dashboard" },
+  { name: "Data Barang", icon: <FaBox />, path: "/data-barang" },
+  { name: "Data Aset", icon: <FaDatabase />, path: "/data-aset" },
+  { name: "Barang Masuk", icon: <FaSignInAlt />, path: "/barang-masuk" },
+  { name: "Barang Keluar", icon: <FaSignOutAlt />, path: "/barang-keluar" },
+  { name: "Pengajuan Barang", icon: <FaClipboardList />, path: "/pengajuan-barang" },
+  { name: "Peminjaman Aset", icon: <FaExchangeAlt />, path: "/peminjaman-aset" },
+  { name: "Stok Opname", icon: <FaBoxes />, path: "/stok-opname" },
+];
 
-  const menus = [
-    { name: "Dashboard", icon: <FaChartPie />, path: "/dashboard" },
-    { name: "Data Barang", icon: <FaBox />, path: "/data-barang" },
-    { name: "Barang Masuk", icon: <FaSignInAlt />, path: "/barang-masuk" },
-    { name: "Barang Keluar", icon: <FaSignOutAlt />, path: "/barang-keluar" },
-    { name: "Pengajuan Barang", icon: <FaClipboardList />, path: "/pengajuan-barang" },
-    { name: "Data Aset", icon: <FaDatabase />, path: "/data-aset" },
-    { name: "Peminjaman Aset", icon: <FaExchangeAlt />, path: "/peminjaman-aset" },
-    { name: "Stok Opname", icon: <FaBoxes />, path: "/stok-opname" },
-  ];
+export default function Sidebar({
+  isOpen,
+  setIsOpen,
+  menus = defaultMenus,      // ✅ bisa override dari luar
+  homePath = "/menu",        // ✅ bisa beda untuk admin: "/menu-admin"
+}) {
+  const navigate = useNavigate();
 
   return (
     <>
@@ -55,7 +62,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           className="p-4 text-lg font-bold border-b flex items-center gap-2 cursor-pointer"
           onClick={() => {
             setIsOpen(false);
-            navigate("/menu");
+            navigate(homePath);   // ✅ pakai homePath (user: /menu, admin: /menu-admin)
           }}
         >
           <img
@@ -73,7 +80,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
               className="flex items-center gap-2 text-gray-700 font-medium hover:text-blue-600"
               onClick={() => {
                 setIsOpen(false);
-                navigate("/menu");
+                navigate(homePath);
               }}
             >
               <FaArrowLeft className="w-4 h-4" />

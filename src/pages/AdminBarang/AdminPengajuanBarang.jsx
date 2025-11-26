@@ -1,13 +1,13 @@
-// src/pages/PengajuanBarang.jsx
+// src/pages/AdminPengajuanBarang.jsx
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Eye, Trash2, Printer } from "lucide-react"; // ✅ Check dihapus
+import { Eye, Trash2, Check } from "lucide-react"; 
 
-import MainLayout from "../../layouts/MainLayout";
+import MainLayoutAdminBarang from "@/layouts/MainLayoutAdminBarang";
 import Table from "../../components/DataBarang/Table";
 import TableRowPB from "../../components/PengajuanBarang/TableRowPB";
 
-export default function PengajuanBarang() {
+export default function AdminPengajuanBarang() {
   const navigate = useNavigate();
 
   const [search, setSearch] = useState("");
@@ -35,36 +35,25 @@ export default function PengajuanBarang() {
     }
   };
 
-  const handlePrint = () => {
-    window.print(); // sementara masih pakai print browser
+  // ✅ handler approve
+  const handleApprove = (item) => {
+    navigate(`/admin-persetujuan-barang/${item.id}`, {
+      state: {
+        data: {
+          noPengajuan: item.number,
+          namaBarang: `Barang ${item.id}`,           // dummy / nanti bisa diganti data asli
+          jumlah: Math.floor(Math.random() * 10) + 1 // dummy
+        },
+      },
+    });
   };
 
   return (
-    <MainLayout>
+    <MainLayoutAdminBarang>
       <div className="bg-white rounded-lg shadow p-4">
-        {/* Header */}
+        {/* Header tanpa tombol Tambah & Cetak */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
           <h2 className="font-bold text-lg">Daftar Pengajuan Barang</h2>
-
-          <div className="flex gap-2 flex-wrap">
-            {/* Tombol Cetak */}
-            <button
-              onClick={handlePrint}
-              className="flex items-center gap-2 px-3 py-2 rounded bg-gray-100 hover:bg-gray-200 text-gray-700 shadow-sm transition-colors justify-center"
-            >
-              <Printer size={18} />
-              <span className="hidden sm:inline">Cetak</span>
-            </button>
-
-            {/* Tombol Tambah */}
-            <button
-              onClick={() => navigate("/add-pengajuan-barang")}
-              className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded shadow transition-transform hover:scale-105"
-            >
-              <Plus size={18} />
-              <span className="hidden sm:inline">Tambah</span>
-            </button>
-          </div>
         </div>
 
         {/* Search (Mobile) */}
@@ -122,10 +111,10 @@ export default function PengajuanBarang() {
                 </p>
 
                 {/* Actions (Mobile) */}
-                <div className="flex gap-2 mt-2">
+                <div className="flex gap-2 mt-2 flex-wrap">
                   <button
                     onClick={() =>
-                      navigate(`/detail-pengajuan-barang/${item.id}`)
+                      navigate(`/detail-pengajuan/${item.id}`)
                     }
                     className="flex items-center gap-1 px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-sm"
                   >
@@ -139,7 +128,14 @@ export default function PengajuanBarang() {
                     <Trash2 size={14} /> <span>Hapus</span>
                   </button>
 
-                  {/* ✅ Tombol Approve dihapus */}
+                  {item.status.toLowerCase() === "menunggu" && (
+                    <button
+                      onClick={() => handleApprove(item)}
+                      className="flex items-center gap-1 px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 rounded text-sm"
+                    >
+                      <Check size={14} /> <span>Approve</span>
+                    </button>
+                  )}
                 </div>
               </div>
             ))
@@ -166,10 +162,10 @@ export default function PengajuanBarang() {
                   key={item.number}
                   item={item}
                   onView={() =>
-                    navigate(`/detail-pengajuan-barang/${item.id}`)
+                    navigate(`/detail-pengajuan/${item.id}`)
                   }
                   onDelete={() => handleDelete(idx)}
-                  // ✅ onApprove dihapus, jadi tidak ada ceklis di desktop
+                  onApprove={() => handleApprove(item)}
                 />
               ))
             ) : (
@@ -185,6 +181,6 @@ export default function PengajuanBarang() {
           </Table>
         </div>
       </div>
-    </MainLayout>
+    </MainLayoutAdminBarang>
   );
 }

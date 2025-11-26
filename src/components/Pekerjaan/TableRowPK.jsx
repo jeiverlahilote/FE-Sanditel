@@ -1,7 +1,7 @@
-// src/components/TableRowPK.jsx
-import { Eye, Trash2, Check } from "lucide-react";
+// src/components/Pekerjaan/TableRowPK.jsx
+import { Eye, Trash2, Check, Pencil } from "lucide-react";
 
-export default function TableRowPK({ item, onView, onDelete, onApprove }) {
+export default function TableRowPK({ item, onView, onDelete, onApprove, onEdit }) {
   // Badge warna status
   const getSubmissionBadge = (status) => {
     switch (status.toLowerCase()) {
@@ -63,9 +63,20 @@ export default function TableRowPK({ item, onView, onDelete, onApprove }) {
           <button
             onClick={onView}
             className="p-1.5 rounded-full hover:bg-blue-100 text-blue-500 transition-colors"
-            title="View"
+            title="Lihat"
           >
             <Eye size={16} />
+          </button>
+        )}
+
+        {/* Edit */}
+        {onEdit && (
+          <button
+            onClick={onEdit}
+            className="p-1.5 rounded-full hover:bg-yellow-100 text-yellow-600 transition-colors"
+            title="Edit"
+          >
+            <Pencil size={16} />
           </button>
         )}
 
@@ -74,7 +85,7 @@ export default function TableRowPK({ item, onView, onDelete, onApprove }) {
           <button
             onClick={onDelete}
             className="p-1.5 rounded-full hover:bg-red-100 text-red-500 transition-colors"
-            title="Delete"
+            title="Hapus"
           >
             <Trash2 size={16} />
           </button>

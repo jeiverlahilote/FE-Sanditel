@@ -1,13 +1,13 @@
-// src/pages/Pekerjaan.jsx
+// src/pages/AdminPekerjaan.jsx
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import MainLayout2 from "../../layouts/MainLayout2";
+import MainLayoutAdmin from "../../layouts/MainLayoutAdmin";
 import Table from "../../components/DataBarang/Table";
 import TableRowPK from "../../components/Pekerjaan/TableRowPK";
-import { Plus, Trash2, Pencil } from "lucide-react";
+import { Trash2, Check, Eye } from "lucide-react";
 import "../../index.css";
 
-export default function Pekerjaan() {
+export default function AdminPekerjaan() {
   const navigate = useNavigate();
 
   // State
@@ -50,14 +50,16 @@ export default function Pekerjaan() {
   ];
 
   // Filter pencarian
-  const filteredData = useMemo(() => {
-    return dataPekerjaan.filter((pekerjaan) =>
-      Object.values(pekerjaan)
-        .join(" ")
-        .toLowerCase()
-        .includes(search.toLowerCase())
-    );
-  }, [dataPekerjaan, search]);
+  const filteredData = useMemo(
+    () =>
+      dataPekerjaan.filter((pekerjaan) =>
+        Object.values(pekerjaan)
+          .join(" ")
+          .toLowerCase()
+          .includes(search.toLowerCase())
+      ),
+    [dataPekerjaan, search]
+  );
 
   // Badge status (untuk mobile card)
   const getSubmissionBadge = (status) => {
@@ -74,8 +76,6 @@ export default function Pekerjaan() {
   };
 
   // Handlers
-  const handleTambah = () => navigate("/add-pekerjaan");
-
   const handleDelete = (item) => {
     if (
       window.confirm(`Yakin ingin menghapus pekerjaan: ${item.JenisPekerjaan}?`)
@@ -84,27 +84,24 @@ export default function Pekerjaan() {
     }
   };
 
-  const handleEdit = (item) => {
-    // sementara pakai halaman add-pekerjaan sebagai form edit
-    // nanti di AddPekerjaan bisa dibedain lewat state.mode === "edit"
-    navigate("/edit-pekerjaan", { state: { mode: "edit", data: item } });
+  const handleApprove = (item) => {
+    navigate("/admin-persetujuan-pekerjaan", { state: { data: item } });
+  };
+
+  const handleView = (item) => {
+    // Sesuaikan path detail sesuai kebutuhanmu
+    navigate(`/detail-pekerjaan/${item.No}`, {
+      state: { data: item },
+    });
   };
 
   return (
-    <MainLayout2>
+    <MainLayoutAdmin>
       <div className="bg-white p-3 sm:p-6 rounded-lg shadow">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4 gap-3">
           <h2 className="font-bold text-lg sm:text-xl">Daftar Pekerjaan</h2>
-          <div className="flex items-center gap-2 flex-wrap">
-            <button
-              onClick={handleTambah}
-              className="flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white px-3 sm:px-4 py-2 rounded shadow transition-transform"
-            >
-              <Plus size={18} />
-              <span className="hidden sm:inline">Tambah</span>
-            </button>
-          </div>
+          {/* Tidak ada tombol tambah di admin */}
         </div>
 
         {/* Search (Mobile) */}
@@ -165,7 +162,14 @@ export default function Pekerjaan() {
                   </span>
                 </p>
 
-                <div className="flex gap-2 mt-2">
+                <div className="flex flex-wrap gap-2 mt-2">
+                  <button
+                    onClick={() => handleView(item)}
+                    className="flex items-center gap-1 px-3 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded text-sm"
+                  >
+                    <Eye size={14} /> Lihat
+                  </button>
+
                   <button
                     onClick={() => handleDelete(item)}
                     className="flex items-center gap-1 px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm"
@@ -173,13 +177,12 @@ export default function Pekerjaan() {
                     <Trash2 size={14} /> Hapus
                   </button>
 
-                  {/* tombol Edit ganti Approve */}
                   {item.Status.toLowerCase() === "dikerjakan" && (
                     <button
-                      onClick={() => handleEdit(item)}
-                      className="flex items-center gap-1 px-3 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-700 rounded text-sm"
+                      onClick={() => handleApprove(item)}
+                      className="flex items-center gap-1 px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 rounded text-sm"
                     >
-                      <Pencil size={14} /> Edit
+                      <Check size={14} /> Approve
                     </button>
                   )}
                 </div>
@@ -200,8 +203,9 @@ export default function Pekerjaan() {
                 <TableRowPK
                   key={item.No}
                   item={item}
-                  onEdit={() => handleEdit(item)}   // ⬅ pakai Edit, bukan Approve
+                  onView={() => handleView(item)} 
                   onDelete={() => handleDelete(item)}
+                  onApprove={() => handleApprove(item)}
                 />
               ))
             ) : (
@@ -217,6 +221,6 @@ export default function Pekerjaan() {
           </Table>
         </div>
       </div>
-    </MainLayout2>
+    </MainLayoutAdmin>
   );
 }

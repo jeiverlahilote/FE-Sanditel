@@ -22,6 +22,10 @@ export default function Navbar({ toggleSidebar }) {
     "/dashboard-laporan": "Dashboard",
     "/pekerjaan": "Pekerjaan",
     "/laporan": "Laporan",
+    "/maintenance": "Maintenance",
+    "/admin": "Admin Dashboard",
+    "/admin-pekerjaan": "Admin Pekerjaan",
+    "/admin-laporan": "Admin Laporan",
     
   };
 

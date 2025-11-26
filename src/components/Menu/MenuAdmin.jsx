@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { Package, BarChart2, Activity, Monitor } from "lucide-react";
 import CardMenu from "./CardMenu";
 
-export default function MenuComp({ variant = "default", backgroundImage, titlePrefix = "",}) {
+export default function MenuAdmin({ variant = "default", backgroundImage, titlePrefix = "",}) {
   const navigate = useNavigate();
 
   const menus = [
@@ -12,28 +12,28 @@ export default function MenuComp({ variant = "default", backgroundImage, titlePr
       icon: Package,
       color: "from-teal-400 to-emerald-500",
       hoverColor: "from-teal-300 to-emerald-400",
-      path: "/dashboard",
+      path: "/admin-pengajuan-barang",
     },
     {
       title: "Laporan Harian Pekerjaan",
       icon: BarChart2,
       color: "from-blue-400 to-indigo-500",
       hoverColor: "from-blue-300 to-indigo-400",
-      path: "/dashboard-laporan",
+      path: "/admin-pekerjaan",
     },
     {
       title: "Monitoring Perangkat",
       icon: Activity,
       color: "from-pink-400 to-rose-500",
       hoverColor: "from-pink-300 to-rose-400",
-      path: "/monitoring-perangkat",
+      path: "/admin-perangkat",
     },
     {
       title: "Dokumentasi Jaringan",
       icon: Monitor,
       color: "from-purple-400 to-violet-500",
       hoverColor: "from-purple-300 to-violet-400",
-      path: "/dokumentasi-jaringan",
+      path: "/admin-jaringan",
     },
   ];
 

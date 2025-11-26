@@ -1,24 +1,20 @@
-// SidebarLaporanHarian.jsx
+// SidebarAdminPekerjaan.jsx
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   FaBars,
-  FaChartPie,
   FaTasks,
   FaFileAlt,
   FaArrowLeft,
-  FaTools,           // ✅ tambah icon maintenance
 } from "react-icons/fa";
 
-export default function SidebarLaporanHarian() {
+export default function SidebarAdminPekerjaan() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false); // state sidebar untuk mobile
 
   const menus = [
-    { name: "Dashboard", icon: <FaChartPie />, path: "/dashboard-laporan" },
-    { name: "Pekerjaan", icon: <FaTasks />, path: "/pekerjaan" },
-    { name: "Laporan", icon: <FaFileAlt />, path: "/laporan" },
-    { name: "Maintenance", icon: <FaTools />, path: "/maintenance" }, // ✅ menu baru
+    { name: "Admin Pekerjaan", icon: <FaTasks />, path: "/admin-pekerjaan" },
+    { name: "Admin Laporan", icon: <FaFileAlt />, path: "/admin-laporan" },
   ];
 
   return (
@@ -50,7 +46,7 @@ export default function SidebarLaporanHarian() {
           className="p-4 text-lg font-bold border-b flex items-center gap-2 cursor-pointer"
           onClick={() => {
             setIsOpen(false);
-            navigate("/menu");
+            navigate("/Admin");
           }}
         >
           <img

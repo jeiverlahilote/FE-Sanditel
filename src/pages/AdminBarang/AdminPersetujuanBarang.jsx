@@ -1,9 +1,9 @@
 import { useLocation, useNavigate } from "react-router-dom";
 
-import MainLayout from "../../layouts/MainLayout";
+import MainLayoutAdminBarang from "@/layouts/MainLayoutAdminBarang";
 import FormPersetujuanBarang from "../../components/PengajuanBarang/FormPersetujuanBarang";
 
-export default function PersetujuanBarang() {
+export default function AdminPersetujuanBarang() {
   const { state } = useLocation();
   const navigate = useNavigate();
 
@@ -12,7 +12,7 @@ export default function PersetujuanBarang() {
   const handleSubmit = (formData) => {
     console.log("Data persetujuan:", formData);
     // TODO: kirim ke API
-    navigate("/pengajuan-barang");
+    navigate("/admin-pengajuan-barang");
   };
 
   const handleCancel = () => {
@@ -21,16 +21,16 @@ export default function PersetujuanBarang() {
 
   if (!pengajuan) {
     return (
-      <MainLayout>
+      <MainLayoutAdminBarang>
         <div className="p-6 text-center text-gray-500">
           Data pengajuan tidak ditemukan.
         </div>
-      </MainLayout>
+      </MainLayoutAdminBarang>
     );
   }
 
   return (
-    <MainLayout>
+    <MainLayoutAdminBarang>
       <div className="p-4 sm:p-6 lg:p-8">
         <FormPersetujuanBarang
           initialData={pengajuan}
@@ -38,6 +38,6 @@ export default function PersetujuanBarang() {
           onCancel={handleCancel}
         />
       </div>
-    </MainLayout>
+    </MainLayoutAdminBarang>
   );
 }

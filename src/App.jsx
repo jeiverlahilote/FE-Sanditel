@@ -7,10 +7,11 @@ import LoginPage from "./pages/Login/LoginPage";
 import RegisterPage from "./pages/Login/RegisterPage";
 import ForgotPasswordPage from "./pages/Login/ForgotPasswordPage";
 import Menu from "./pages/Menu/Menu";
+import Admin from "./pages/Menu/Admin";
+import AdminPekerjaan from "./pages/AdminPekerjaan/AdminPekerjaan";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import PengajuanBarang from "./pages/PengajuanBarang/PengajuanBarang";
 import AddPengajuanBarang from "./pages/PengajuanBarang/AddPengajuanBarang";
-import PersetujuanBarang from "./pages/PengajuanBarang/PersetujuanBarang";
 import DataAset from "./pages/DataAset/DataAset";
 import AddDataAset from "./pages/DataAset/AddDataAset";
 import EditDataAset from "./pages/DataAset/EditDataAset";
@@ -36,6 +37,21 @@ import KategoriDetail from "./pages/DataAset/KategoriDetail";
 import DetailPengajuanBarang from "./pages/PengajuanBarang/DetailPengajuanBarang";
 import DetailLaporan from "./pages/Laporan/DetailLaporan";
 import DashboardLaporan from "./pages/DashboardLaporanHarian/DashboardLaporan";
+import { Import } from "lucide-react";
+import DetailPekerjaan from "./pages/AdminPekerjaan/DetailPekerjaan";
+import AdminPersetujuanPekerjaan from "./pages/AdminPekerjaan/AdminPersetujuanPekerjaan";
+import AdminLaporan from "./pages/AdminPekerjaan/AdminLaporan";
+import EditPekerjaan from "./pages/Pekerjaan/EditPekerjaan";
+import AdminPengajuanBarang from "./pages/AdminBarang/AdminPengajuanBarang";
+import AdminPersetujuanBarang from "./pages/AdminBarang/AdminPersetujuanBarang";
+import DetailPengajuan from "./pages/AdminBarang/DetailPengajuan";
+import AddMaintenance from "./pages/Maintenance/AddMaintenance";
+import Maintenance from "./pages/Maintenance/Maintenance";
+import AddMaintenance2 from "./pages/Maintenance/AddMaintenance2";
+import AddMaintenance3 from "./pages/Maintenance/AddMaintenance3";
+import EditMaintenance from "./pages/Maintenance/EditMaintenance";
+import EditMaintenance2 from "./pages/Maintenance/EditMaintenance2";
+import EditMaintenance3 from "./pages/Maintenance/EditMainTenance3";
 
 
 // 🔹 Animated wrapper
@@ -85,16 +101,35 @@ function AnimatedRoutes() {
 
         {/* Menu Dashboard */}
         <Route path="/menu" element={<Menu />} />
+        <Route path="/admin" element={<Admin />} />
         <Route path="/pekerjaan" element={<Pekerjaan />} />
+        <Route path="/detail-pekerjaan/:id" element={<DetailPekerjaan />} />
+        <Route path="/admin-persetujuan-pekerjaan" element={<AdminPersetujuanPekerjaan />} />
+
+        {/* Admin */}
+        <Route path="admin-pekerjaan" element={<AdminPekerjaan />} />
+        <Route path="/admin-laporan" element={<AdminLaporan />} />
+        <Route path="/admin-pengajuan-barang" element={<AdminPengajuanBarang />} />
+        <Route path="/admin-persetujuan-barang/:id" element={<AdminPersetujuanBarang />} />
+        <Route path="/detail-pengajuan/:id" element={<DetailPengajuan/>} />
 
         {/* Dashboard */}
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/dashboard-laporan" element={<DashboardLaporan />} />"
+        <Route path="/dashboard-laporan" element={<DashboardLaporan />} />
 
+        {/* Maintenance */}
+        <Route path="/maintenance" element={<Maintenance />} />
+        <Route path="/add-maintenance" element={<AddMaintenance />} />
+        <Route path="/add-maintenance-2" element={<AddMaintenance2 />} />
+        <Route path="/add-maintenance-3" element={<AddMaintenance3 />} />
+        <Route path="/edit-maintenance" element={<EditMaintenance />} />
+        <Route path="/edit-maintenance2" element={<EditMaintenance2 />} />
+        <Route path="/edit-maintenance3" element={<EditMaintenance3 />} />
+        
+        
         {/* Pengajuan Barang */}
         <Route path="/pengajuan-barang" element={<PengajuanBarang />} />
         <Route path="/add-pengajuan-barang" element={<AddPengajuanBarang />} />
-        <Route path="/persetujuan-barang" element={<PersetujuanBarang />} />
         <Route path="/detail-pengajuan-barang/:id" element={<DetailPengajuanBarang />} />
 
         {/* Data Aset */}
@@ -130,6 +165,7 @@ function AnimatedRoutes() {
         {/* Pekerjaan */}
         <Route path="/add-pekerjaan" element={<AddPekerjaan />} />
         <Route path="/persetujuan-pekerjaan" element={<PersetujuanPekerjaan />} />
+        <Route path="/edit-pekerjaan" element={<EditPekerjaan />} />
 
         {/* Laporan */}
         <Route path="/laporan" element={<Laporan />} />
