@@ -24,8 +24,8 @@ export default function LoginPage() {
       console.log("Login data:", data);
 
       // Navigasi ke Menu
-      navigate("/Menu");
-      // navigate("/Admin");
+      // navigate("/Menu");
+      navigate("/Admin");
     }, 1500);
   };
 

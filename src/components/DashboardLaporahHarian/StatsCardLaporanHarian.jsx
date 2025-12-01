@@ -1,15 +1,19 @@
-// src/components/StatsCard.jsx
+// src/components/DashboardLaporahHarian/StatsCardLaporanHarian.jsx
 import React from "react";
 
 export default function StatsCardLaporanHarian({ title, value, bgColor, icon: Icon }) {
   return (
     <div
-      className="flex items-center p-3 sm:p-5 rounded-2xl shadow-md cursor-pointer 
-                 transition-all duration-300 ease-in-out 
-                 hover:-translate-y-1 hover:shadow-lg w-full"
+      className="
+        flex items-center gap-3 sm:gap-4 
+        p-3 sm:p-4 
+        rounded-2xl shadow-md cursor-pointer 
+        transition-all duration-300 ease-in-out 
+        hover:-translate-y-1 hover:shadow-lg 
+        w-full h-full
+      "
       style={{
         background: bgColor || "linear-gradient(135deg, #FFD700, #FFB400)",
-        minWidth: "200px",
       }}
     >
       {/* Icon Container */}
@@ -18,7 +22,7 @@ export default function StatsCardLaporanHarian({ title, value, bgColor, icon: Ic
       </div>
 
       {/* Text Content */}
-      <div className="ml-3 sm:ml-4">
+      <div className="ml-1 sm:ml-2">
         <p className="text-black text-xl sm:text-3xl font-bold leading-tight">
           {value}
         </p>

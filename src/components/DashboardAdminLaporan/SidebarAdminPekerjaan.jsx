@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   FaBars,
+  FaChartPie,
   FaTasks,
   FaFileAlt,
   FaArrowLeft,
+  FaTools,
 } from "react-icons/fa";
 
 export default function SidebarAdminPekerjaan() {
@@ -13,9 +15,12 @@ export default function SidebarAdminPekerjaan() {
   const [isOpen, setIsOpen] = useState(false); // state sidebar untuk mobile
 
   const menus = [
-    { name: "Admin Pekerjaan", icon: <FaTasks />, path: "/admin-pekerjaan" },
-    { name: "Admin Laporan", icon: <FaFileAlt />, path: "/admin-laporan" },
-  ];
+  { name: "Admin Dashboard", icon: <FaChartPie />, path: "/admin-dashboard-pekerjaan" },
+  { name: "Admin Pekerjaan", icon: <FaTasks />, path: "/admin-pekerjaan" },
+  { name: "Admin Laporan", icon: <FaFileAlt />, path: "/admin-laporan" },
+  { name: "Admin Maintenance", icon: <FaTools />, path: "/admin-maintenance" },
+];
+
 
   return (
     <>

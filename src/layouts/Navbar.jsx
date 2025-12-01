@@ -26,6 +26,7 @@ export default function Navbar({ toggleSidebar }) {
     "/admin": "Admin Dashboard",
     "/admin-pekerjaan": "Admin Pekerjaan",
     "/admin-laporan": "Admin Laporan",
+    "/admin-maintenance": "Admin Maintenance",
     
   };
 

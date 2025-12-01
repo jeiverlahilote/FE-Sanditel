@@ -26,7 +26,7 @@ export default function Laporan() {
       HariTanggal: "2025-08-26",
       JenisPekerjaan: "Maintenance",
       Bagian: "Internet",
-      Petugas: "Andi",
+      Petugas: "Budi",
       Status: "Tidak Dikerjakan",
     },
     {
@@ -34,7 +34,7 @@ export default function Laporan() {
       HariTanggal: "2025-08-27",
       JenisPekerjaan: "Troubleshooting",
       Bagian: "Telepon",
-      Petugas: "Sari",
+      Petugas: "Budi",
       Status: "Selesai",
     },
   ]);

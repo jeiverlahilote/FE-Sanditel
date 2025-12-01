@@ -52,6 +52,8 @@ import AddMaintenance3 from "./pages/Maintenance/AddMaintenance3";
 import EditMaintenance from "./pages/Maintenance/EditMaintenance";
 import EditMaintenance2 from "./pages/Maintenance/EditMaintenance2";
 import EditMaintenance3 from "./pages/Maintenance/EditMainTenance3";
+import AdminDashboardPekerjaan from "./pages/AdminPekerjaan/AdminDashboardPekerjaan";
+import AdminMaintenance from "./pages/AdminPekerjaan/AdminMaintenance";
 
 
 // 🔹 Animated wrapper
@@ -107,8 +109,10 @@ function AnimatedRoutes() {
         <Route path="/admin-persetujuan-pekerjaan" element={<AdminPersetujuanPekerjaan />} />
 
         {/* Admin */}
+        <Route path="/admin-dashboard-pekerjaan" element={<AdminDashboardPekerjaan />} />
         <Route path="admin-pekerjaan" element={<AdminPekerjaan />} />
         <Route path="/admin-laporan" element={<AdminLaporan />} />
+        <Route path="/admin-maintenance" element={<AdminMaintenance />} />
         <Route path="/admin-pengajuan-barang" element={<AdminPengajuanBarang />} />
         <Route path="/admin-persetujuan-barang/:id" element={<AdminPersetujuanBarang />} />
         <Route path="/detail-pengajuan/:id" element={<DetailPengajuan/>} />

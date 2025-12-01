@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SidebarAdminPekerjaan from "@/components/DashboardAdmin/SidebarAdminPekerjaan";
+import SidebarAdminPekerjaan from "@/components/DashboardAdminLaporan/SidebarAdminPekerjaan";
 import Navbar from "./Navbar";
 
 export default function MainLayout2({ children }) {
