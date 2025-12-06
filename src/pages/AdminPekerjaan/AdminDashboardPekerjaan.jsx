@@ -1,9 +1,9 @@
 // src/pages/AdminDashboardPekerjaan.jsx
 import { FileText, Clock, CheckCircle, Users } from "lucide-react";
 
-import StatsCardLaporanHarian from "@/components/DashboardLaporahHarian/StatsCardLaporanHarian";
-import LineChartLaporan from "@/components/DashboardLaporahHarian/LineChartLaporan";
-import TableLaporanHarian from "@/components/DashboardLaporahHarian/TableLaporanHarian";
+import StatsCardLaporanHarian from "@/components/LaporanPekerjaan/DashboardLaporahHarian/StatsCardLaporanHarian";
+import LineChartLaporan from "@/components/LaporanPekerjaan/DashboardLaporahHarian/LineChartLaporan";
+import TableLaporanHarian from "@/components/LaporanPekerjaan/DashboardLaporahHarian/TableLaporanHarian";
 
 import MainLayoutAdmin from "@/layouts/MainLayoutAdmin";
 

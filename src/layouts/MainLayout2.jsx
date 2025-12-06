@@ -1,5 +1,5 @@
 import { useState } from "react";
-import SidebarLaporanHarian from "../components/DashboardLaporahHarian/SidebarLaporanHarian";
+import SidebarLaporanHarian from "../components/LaporanPekerjaan/DashboardLaporahHarian/SidebarLaporanHarian";
 import Navbar from "./Navbar";
 
 export default function MainLayout2({ children }) {

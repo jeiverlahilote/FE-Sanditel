@@ -2,9 +2,9 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayoutAdmin from "../../layouts/MainLayoutAdmin";
-import Table from "../../components/DataBarang/Table";
-import TableRowLP from "../../components/Laporan/TableRowLP";
-import { Eye } from "lucide-react";
+import Table from "../../components/ManajemenInventory/DataBarang/Table";
+import TableRowLP from "../../components/LaporanPekerjaan/Laporan/TableRowLP";
+import { Eye, Trash2 } from "lucide-react"; 
 import "../../index.css";
 
 export default function AdminLaporan() {
@@ -62,7 +62,19 @@ export default function AdminLaporan() {
   // Handler untuk navigasi ke detail laporan
   const handleView = (item) => navigate(`/detail-pekerjaan/${item.No}`);
 
-  // Badge status (sama dengan TableRowPK/LP style tegas)
+  // Handler delete
+  const handleDelete = (no) => {
+    const isConfirmed = window.confirm(
+      "Yakin ingin menghapus laporan ini?"
+    );
+    if (!isConfirmed) return;
+
+    setDataLaporan((prev) =>
+      prev.filter((laporan) => laporan.No !== no)
+    );
+  };
+
+  // Badge status
   const getStatusBadge = (status) => {
     if (!status) return null;
     switch (status.toLowerCase()) {
@@ -155,6 +167,12 @@ export default function AdminLaporan() {
                   >
                     <Eye size={14} /> Lihat
                   </button>
+                  <button
+                    onClick={() => handleDelete(item.No)}
+                    className="flex items-center gap-1 px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm"
+                  >
+                    <Trash2 size={14} /> Hapus
+                  </button>
                 </div>
               </div>
             ))
@@ -173,7 +191,8 @@ export default function AdminLaporan() {
                 <TableRowLP
                   key={item.No}
                   item={item}
-                  onView={() => handleView(item)} // navigasi ke detail
+                  onView={() => handleView(item)}   // navigasi ke detail
+                  onDelete={() => handleDelete(item.No)} // ⬅️ kirim handler delete
                 />
               ))
             ) : (

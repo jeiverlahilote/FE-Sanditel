@@ -2,8 +2,8 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayoutAdmin from "../../layouts/MainLayoutAdmin";
-import Table from "../../components/DataBarang/Table";
-import TableRowPK from "../../components/Pekerjaan/TableRowPK";
+import Table from "../../components/ManajemenInventory/DataBarang/Table";
+import TableRowPK from "../../components/LaporanPekerjaan/Pekerjaan/TableRowPK";
 import { Trash2, Check, Eye } from "lucide-react";
 import "../../index.css";
 

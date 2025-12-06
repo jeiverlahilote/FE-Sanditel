@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { Eye, Trash2, Check } from "lucide-react"; 
 
 import MainLayoutAdminBarang from "@/layouts/MainLayoutAdminBarang";
-import Table from "../../components/DataBarang/Table";
-import TableRowPB from "../../components/PengajuanBarang/TableRowPB";
+import Table from "../../components/ManajemenInventory/DataBarang/Table";
+import TableRowPB from "../../components/ManajemenInventory/PengajuanBarang/TableRowPB";
 
 export default function AdminPengajuanBarang() {
   const navigate = useNavigate();

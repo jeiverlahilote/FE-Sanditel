@@ -1,6 +1,6 @@
 // src/layouts/MainLayoutAdminBarang.jsx
 import { useState } from "react";
-import Sidebar from "../components/Dashboard/Sidebar";
+import Sidebar from "../components/ManajemenInventory/Dashboard/Sidebar";
 import Navbar from "./Navbar";
 import { FaClipboardList } from "react-icons/fa";
 

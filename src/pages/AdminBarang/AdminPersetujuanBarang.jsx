@@ -1,7 +1,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 
 import MainLayoutAdminBarang from "@/layouts/MainLayoutAdminBarang";
-import FormPersetujuanBarang from "../../components/PengajuanBarang/FormPersetujuanBarang";
+import FormPersetujuanBarang from "../../components/ManajemenInventory/PengajuanBarang/FormPersetujuanBarang";
 
 export default function AdminPersetujuanBarang() {
   const { state } = useLocation();

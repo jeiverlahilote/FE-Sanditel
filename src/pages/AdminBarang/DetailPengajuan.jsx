@@ -1,7 +1,7 @@
 // src/pages/DetailPengajuanBarangPage.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import MainLayoutAdminBarang from "@/layouts/MainLayoutAdminBarang";
-import DetailBarang from "@/components/PengajuanBarang/DetailBarang";
+import DetailBarang from "@/components/ManajemenInventory/PengajuanBarang/DetailBarang";
 
 export default function DetailPengajuan() {
   const { id } = useParams();

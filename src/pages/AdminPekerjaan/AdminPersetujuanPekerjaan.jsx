@@ -2,7 +2,7 @@
 import { useLocation, useNavigate } from "react-router-dom";
 
 import MainLayoutAdmin from "../../layouts/MainLayoutAdmin";
-import FormPersetujuanPekerjaan from "../../components/Pekerjaan/FormPersetujuanPekerjaan";
+import FormPersetujuanPekerjaan from "../../components/LaporanPekerjaan/Pekerjaan/FormPersetujuanPekerjaan";
 
 export default function AdminPersetujuanPekerjaan() {
   const { state } = useLocation();

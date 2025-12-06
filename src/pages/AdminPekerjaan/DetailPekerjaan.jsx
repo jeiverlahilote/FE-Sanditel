@@ -1,7 +1,7 @@
 // src/pages/DetailLaporanPage.jsx
 import { useParams, useNavigate } from "react-router-dom";
 import MainLayoutAdmin from "../../layouts/MainLayoutAdmin";
-import DetailLaporan from "@/components/Laporan/DetailLaporan";
+import DetailLaporan from "@/components/LaporanPekerjaan/Laporan/DetailLaporan";
 
 export default function DetailPekerjaanPage() {
   const { id } = useParams();
