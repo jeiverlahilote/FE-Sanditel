@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayout2 from "../../../layouts/MainLayout2";
@@ -19,39 +20,12 @@ export default function Laporan() {
     Status: [],
   });
 
-  // Data laporan
-  const [dataLaporan, setDataLaporan] = useState([
-    {
-      No: 1,
-      HariTanggal: "2025-08-25",
-      JenisPekerjaan: "Instalasi",
-      Bagian: "CCTV",
-      Petugas: "Budi",
-      Status: "Selesai",
-    },
-    {
-      No: 2,
-      HariTanggal: "2025-08-26",
-      JenisPekerjaan: "Maintenance",
-      Bagian: "Internet",
-      Petugas: "Budi",
-      Status: "Tidak Dikerjakan",
-    },
-    {
-      No: 3,
-      HariTanggal: "2025-08-27",
-      JenisPekerjaan: "Troubleshooting",
-      Bagian: "Telepon",
-      Petugas: "Budi",
-      Status: "Selesai",
-    },
-  ]);
+  const [dataLaporan, setDataLaporan] = useState([]);
 
   // Headers tabel
   const headers = [
     "No",
     "Hari Tanggal",
-    "Jenis Pekerjaan",
     "Bagian",
     "Petugas",
     "Status",
@@ -82,13 +56,13 @@ export default function Laporan() {
   const getStatusBadge = (status) => {
     if (!status) return null;
     switch (status.toLowerCase()) {
-      case "selesai":
+      case "Selesai":
         return (
           <span className="px-3 py-1 rounded-full bg-green-500 text-white text-xs font-semibold">
             Selesai
           </span>
         );
-      case "tidak dikerjakan":
+      case "Ditolak":
         return (
           <span className="px-3 py-1 rounded-full bg-red-500 text-white text-xs font-semibold">
             Tidak Dikerjakan
@@ -137,6 +111,66 @@ export default function Laporan() {
       options: ["Selesai", "Dikerjakan", "Tidak Dikerjakan"],
     },
   ];
+
+  useEffect(() => {
+    const fetchLaporan = async () => {
+      try {
+        const token = localStorage.getItem("token");
+
+        const response = await fetch(
+          "https://jungly-lathery-justin.ngrok-free.dev/api/laporan-pekerjaan",
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const text = await response.text();
+        let result;
+
+        try {
+          result = JSON.parse(text);
+        } catch (err) {
+          console.error("ERROR PARSING JSON:", text);
+          return;
+        }
+
+        if (!response.ok || !result.success) {
+          console.error("Fetch gagal:", result.message);
+          return;
+        }
+
+        // Filter hanya status Selesai dan Ditolak
+        const filtered = result.data.filter(
+          (item) =>
+            item.status?.toLowerCase() === "selesai" ||
+            item.status?.toLowerCase() === "ditolak"
+        );
+
+        // Map data ke bentuk frontend
+        const mapped = filtered.map((item, index) => ({
+          No: index + 1,
+          HariTanggal: item.tanggal,
+          JenisPekerjaan: item.jenis_pekerjaan,
+          Bagian: item.bagian,
+          Petugas: item.petugas,
+          Status: item.status,
+          raw: item, // simpan data asli jika butuh
+        }));
+
+        setDataLaporan(mapped);
+      } catch (err) {
+        console.error("ERR:", err);
+      }
+    };
+
+    fetchLaporan();
+  }, []);
+
 
   return (
     <MainLayout2>

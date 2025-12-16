@@ -1,4 +1,5 @@
 // src/pages/DetailLaporanPage.jsx
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import MainLayoutAdmin from "../../layouts/MainLayoutAdmin";
 import DetailLaporan from "@/components/LaporanPekerjaan/Laporan/DetailLaporan";
@@ -7,19 +8,44 @@ export default function DetailPekerjaanPage() {
   const { id } = useParams();
   const navigate = useNavigate();
 
-  // Contoh data dummy (nanti bisa diganti fetch dari API/DB sesuai id)
-  const dataDummy = {
-    id: 1,
-    hariTanggal: "2025-09-09",
-    jenisPekerjaan: "Instalasi",
-    bagian: "CCTV",
-    petugas: "Budi",
-    deskripsi: "Pemasangan CCTV di ruang rapat utama",
-    lampiran: [
-      "/Biro-Umum-Setda-Jabar.png",
-      "/Biro-Umum-Setda-Jabar.png",
-    ],
-  };
+  const [dataLaporan, setDataLaporan] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchDetail = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const token = localStorage.getItem("token");
+        const response = await fetch(
+          `https://jungly-lathery-justin.ngrok-free.dev/api/laporan-pekerjaan/${id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Gagal mengambil data laporan");
+        }
+
+        setDataLaporan(result.data);
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDetail();
+  }, [id]);
 
   return (
     <MainLayoutAdmin>
@@ -32,8 +58,16 @@ export default function DetailPekerjaanPage() {
           Kembali
         </button>
 
+        {/* Loading / Error */}
+        {loading && (
+          <div className="text-center text-gray-500 py-4">Memuat data...</div>
+        )}
+        {error && (
+          <div className="text-center text-red-500 py-4">{error}</div>
+        )}
+
         {/* Detail Laporan */}
-        <DetailLaporan data={dataDummy} />
+        {dataLaporan && <DetailLaporan data={dataLaporan} />}
       </div>
     </MainLayoutAdmin>
   );

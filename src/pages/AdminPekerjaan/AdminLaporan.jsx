@@ -1,9 +1,9 @@
-import { useState, useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import MainLayoutAdmin from "../../layouts/MainLayoutAdmin";
 import Table from "../../components/ManajemenInventory/DataBarang/Table";
 import TableRowLP from "../../components/LaporanPekerjaan/Laporan/TableRowLP";
-import { Eye, Trash2 } from "lucide-react"; 
+import { Eye } from "lucide-react"; 
 import "../../index.css";
 
 export default function AdminLaporan() {
@@ -11,57 +11,57 @@ export default function AdminLaporan() {
 
   // State
   const [search, setSearch] = useState("");
-  const [isFilterOpen, setIsFilterOpen] = useState(false); // Add state for mobile filter visibility
-
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [filters, setFilters] = useState({
     JenisPekerjaan: [],
     Bagian: [],
     Status: [],
   });
+  const [dataLaporan, setDataLaporan] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
-  const [dataLaporan, setDataLaporan] = useState([
-    {
-      No: 1,
-      HariTanggal: "2025-08-25",
-      JenisPekerjaan: "Instalasi",
-      Bagian: "CCTV",
-      Petugas: "Budi",
-      Status: "Selesai",
-    },
-    {
-      No: 2,
-      HariTanggal: "2025-08-26",
-      JenisPekerjaan: "Maintenance",
-      Bagian: "Internet",
-      Petugas: "Andi",
-      Status: "Tidak Dikerjakan",
-    },
-    {
-      No: 3,
-      HariTanggal: "2025-08-27",
-      JenisPekerjaan: "Troubleshooting",
-      Bagian: "Telepon",
-      Petugas: "Sari",
-      Status: "Selesai",
-    },
-    {      No: 4,
-      HariTanggal: "2025-08-28",
-      JenisPekerjaan: "Maintenance",
-      Bagian: "CCTV",
-      Petugas: "Dewi",
-      Status: "Selesai",
-    },
-  ]);
+  // Fetch seluruh data laporan dari API
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      setError("");
+      try {
+        const token = localStorage.getItem("token");
+        const res = await fetch("https://jungly-lathery-justin.ngrok-free.dev/api/laporan-pekerjaan", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "ngrok-skip-browser-warning": "true",
+          },
+        });
 
-  const headers = [
-    "No",
-    "Hari Tanggal",
-    "Jenis Pekerjaan",
-    "Bagian",
-    "Petugas",
-    "Status",
-    "Aksi",
-  ];
+        const result = await res.json();
+
+        if (!res.ok || !result.success) {
+          throw new Error(result.message || "Gagal memuat data laporan");
+        }
+
+        // Map data dari API ke format yang sama dengan TableRowLP
+        const mappedData = result.data.map((item, index) => ({
+          No: item.id, // atau item.id_pekerjaan kalau mau ID custom
+          HariTanggal: item.tanggal || item.HariTanggal,
+          JenisPekerjaan: item.jenis_pekerjaan || item.jenis_pekerjaan,
+          Bagian: item.bagian || item.bagian,
+          Petugas: item.petugas || item.Petugas,
+          Status: item.status,
+        }));
+
+        setDataLaporan(mappedData);
+      } catch (err) {
+        console.error(err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   // Function to handle filter changes
   const handleFilterChange = (filterName, value) => {
@@ -79,7 +79,7 @@ export default function AdminLaporan() {
     });
   };
 
-  // Reusable Filter logic
+  // Filter & Search
   const filteredData = useMemo(() => {
     return dataLaporan.filter((laporan) => {
       const searchMatch = Object.values(laporan)
@@ -88,7 +88,7 @@ export default function AdminLaporan() {
         .includes(search.toLowerCase());
 
       const filterMatch = Object.keys(filters).every((filterName) => {
-        if (filters[filterName].length === 0) return true; // If no filter, pass
+        if (filters[filterName].length === 0) return true;
         return filters[filterName].includes(laporan[filterName]);
       });
 
@@ -96,20 +96,8 @@ export default function AdminLaporan() {
     });
   }, [dataLaporan, search, filters]);
 
-  // Handler untuk navigasi ke detail laporan
+  // Handler navigasi ke detail laporan
   const handleView = (item) => navigate(`/detail-pekerjaan/${item.No}`);
-
-  // Handler delete
-  const handleDelete = (no) => {
-    const isConfirmed = window.confirm(
-      "Yakin ingin menghapus laporan ini?"
-    );
-    if (!isConfirmed) return;
-
-    setDataLaporan((prev) =>
-      prev.filter((laporan) => laporan.No !== no)
-    );
-  };
 
   // Badge status
   const getStatusBadge = (status) => {
@@ -119,6 +107,12 @@ export default function AdminLaporan() {
         return (
           <span className="px-3 py-1 rounded-full bg-green-500 text-white text-xs font-semibold">
             Selesai
+          </span>
+        );
+      case "Dikerjakan":
+        return (
+          <span className="px-3 py-1 rounded-full bg-blue-500 text-white text-xs font-semibold">
+            Dikerjakan
           </span>
         );
       case "tidak dikerjakan":
@@ -153,6 +147,15 @@ export default function AdminLaporan() {
       label: "Status",
       options: ["Dikerjakan", "Selesai", "Tidak Dikerjakan"],
     },
+  ];
+
+  const headers = [
+    "No",
+    "Hari Tanggal",
+    "Bagian",
+    "Petugas",
+    "Status",
+    "Aksi",
   ];
 
   return (

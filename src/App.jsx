@@ -47,8 +47,6 @@ import AdminPersetujuanBarang from "./pages/AdminBarang/AdminPersetujuanBarang";
 import DetailPengajuan from "./pages/AdminBarang/DetailPengajuan";
 import AddMaintenance from "./pages/LaporanPekerjaan/Maintenance/AddMaintenance";
 import Maintenance from "./pages/LaporanPekerjaan/Maintenance/Maintenance";
-import AddMaintenance2 from "./pages/LaporanPekerjaan/Maintenance/AddMaintenance2";
-import AddMaintenance3 from "./pages/LaporanPekerjaan/Maintenance/AddMaintenance3";
 import EditMaintenance from "./pages/LaporanPekerjaan/Maintenance/EditMaintenance";
 import EditMaintenance2 from "./pages/LaporanPekerjaan/Maintenance/EditMaintenance2";
 import EditMaintenance3 from "./pages/LaporanPekerjaan/Maintenance/EditMainTenance3";
@@ -56,6 +54,7 @@ import AdminDashboardPekerjaan from "./pages/AdminPekerjaan/AdminDashboardPekerj
 import AdminMaintenance from "./pages/AdminPekerjaan/AdminMaintenance";
 import DetailMaintenance from "./components/LaporanPekerjaan/Maintenance/DetailMaintenance";
 import AdminDetailMaintenance from "./pages/AdminPekerjaan/AdminDetailMaintenance";
+import DetailMaintenancePage from "./pages/LaporanPekerjaan/Maintenance/DetailMaintenancePage";
 
 
 // 🔹 Animated wrapper
@@ -152,12 +151,10 @@ function AnimatedRoutes() {
         {/* Maintenance */}
         <Route path="/maintenance" element={<Maintenance />} />
         <Route path="/add-maintenance" element={<AddMaintenance />} />
-        <Route path="/add-maintenance-2" element={<AddMaintenance2 />} />
-        <Route path="/add-maintenance-3" element={<AddMaintenance3 />} />
         <Route path="/edit-maintenance" element={<EditMaintenance />} />
         <Route path="/edit-maintenance2" element={<EditMaintenance2 />} />
         <Route path="/edit-maintenance3" element={<EditMaintenance3 />} />
-        <Route path="/detail-maintenance/:id" element={<DetailMaintenance />} />
+        <Route path="/detail-maintenance/:id" element={<DetailMaintenancePage />} />
         <Route path="admin-detail-maintenance/:id" element={<AdminDetailMaintenance />} />
 
         {/* Pengajuan Barang */}

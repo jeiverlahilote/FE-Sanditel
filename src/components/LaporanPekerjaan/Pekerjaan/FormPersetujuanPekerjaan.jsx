@@ -80,12 +80,12 @@ export default function FormPersetujuanPekerjaan({ initialData, onSubmit, onCanc
           value={formData.statusPersetujuan}
           onChange={handleChange}
           required
-          className="w-full border rounded-lg px-3 py-2 text-sm sm:text-base focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">-- Pilih Status --</option>
           <option value="Selesai">Selesai</option>
-          <option value="Tidak Dikerjakan">Tidak Dikerjakan</option>
+          <option value="Ditolak">Ditolak</option>
         </select>
+
       </div>
 
       {/* Action Buttons */}

@@ -25,29 +25,26 @@ const RegisterForm = ({ onRegister, loading, error, message, goLogin }) => {
   };
 
   const handleSubmit = () => {
-    if (
-      !form.email ||
-      !form.username ||
-      !form.contact ||
-      !form.password ||
-      !form.confirmPassword
-    ) {
-      return onRegister({ error: "Semua field wajib diisi !!" });
-    }
+  if (
+    !form.email ||
+    !form.username ||
+    !form.contact ||
+    !form.password ||
+    !form.confirmPassword
+  ) {
+    return onRegister({ error: "Semua field wajib diisi !!" });
+  }
 
-    if (form.password !== form.confirmPassword) {
-      return onRegister({
-        error: "Password dan konfirmasi password tidak sama !!",
-      });
-    }
+  if (form.password !== form.confirmPassword) {
+    return onRegister({
+      error: "Password dan konfirmasi password tidak sama !!",
+    });
+  }
 
-    onRegister(form); // kirim data ke parent
+  // Kirim data bersih ke parent
+  onRegister(form);
+};
 
-    // Remove immediate navigation and only show success message
-    setTimeout(() => {
-      setMessage("Akun berhasil dibuat!"); // Show the success message
-    }, 1500);  // Simulate a delay before showing the success message
-  };
 
   return (
     <motion.div

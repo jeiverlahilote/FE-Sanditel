@@ -116,28 +116,24 @@ export default function FormMaintenance3({ onSubmit, onCancel }) {
   };
 
   // 🔹 Submit (step terakhir → Submit)
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    // hasil: ok → 1, tidak → 0
-    const aksesMapped = formData.aksesJaringan.map((row) => ({
+  const payload = {
+    aksesJaringan: formData.aksesJaringan.map((row) => ({
       ...row,
-      hasil:
-        row.hasil === "ok" ? 1 : row.hasil === "tidak" ? 0 : row.hasil ?? "",
-    }));
-
-    const payload = new FormData();
-    payload.append(
-      "pemeriksaanAksesJaringan",
-      JSON.stringify(aksesMapped)
-    );
-    payload.append("statusUmum", JSON.stringify(formData.statusUmum));
-    payload.append("ringkasanPertemuan", formData.ringkasanPertemuan);
-    payload.append("rencanaTindakLanjut", formData.rencanaTindakLanjut);
-    payload.append("tanggal", formData.tanggal);
-
-    onSubmit(payload);
+      hasil: row.hasil === "ok" ? 1 : row.hasil === "tidak" ? 0 : row.hasil ?? "",
+    })),
+    statusUmum: formData.statusUmum,
+    ringkasanPertemuan: formData.ringkasanPertemuan,
+    rencanaTindakLanjut: formData.rencanaTindakLanjut,
+    tanggal: formData.tanggal,
   };
+
+  onSubmit(payload);
+};
+
+
 
   return (
     <form

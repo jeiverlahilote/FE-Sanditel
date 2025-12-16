@@ -160,30 +160,21 @@ export default function FormMaintenance({ onSubmit, onCancel }) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    const payload = new FormData();
-    payload.append("nomorForm", formData.nomorForm);
-    payload.append("tanggalPemeriksaan", formData.tanggalPemeriksaan);
-    payload.append(
-      "periodePelaksanaan",
-      JSON.stringify(formData.periodePelaksanaan)
-    );
-    payload.append("timPelaksana", formData.timPelaksana);
-    payload.append("areaLokasi", JSON.stringify(formData.areaLokasi));
+    const payload = {
+      nomorForm: formData.nomorForm,
+      tanggalPemeriksaan: formData.tanggalPemeriksaan,
+      periodePelaksanaan: formData.periodePelaksanaan,
+      timPelaksana: formData.timPelaksana,
+      areaLokasi: formData.areaLokasi,
+      pemeriksaanPerangkat: formData.pemeriksaanPerangkat.map((row) => ({
+        ...row,
+        hasil: row.hasil === "ok" ? 1 : row.hasil === "tidak" ? 0 : row.hasil ?? "",
+      })),
+    };
 
-    // 🔹 kirim hasil sebagai 1 (ok) / 0 (tidak)
-    payload.append(
-      "pemeriksaanPerangkat",
-      JSON.stringify(
-        formData.pemeriksaanPerangkat.map((row) => ({
-          ...row,
-          hasil:
-            row.hasil === "ok" ? 1 : row.hasil === "tidak" ? 0 : row.hasil ?? "",
-        }))
-      )
-    );
-
-    onSubmit(payload);
+    onSubmit(payload); // kirim sebagai object JSON murni
   };
+
 
   return (
     <form

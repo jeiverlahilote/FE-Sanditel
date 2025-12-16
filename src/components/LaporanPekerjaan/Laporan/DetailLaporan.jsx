@@ -10,8 +10,8 @@ export default function DetailLaporan({ data }) {
   if (!data) return <p>Tidak ada data laporan.</p>;
 
   const fields = [
-    { label: "Hari & Tanggal", value: data.hariTanggal },
-    { label: "Jenis Pekerjaan", value: data.jenisPekerjaan },
+    { label: "Hari & Tanggal", value: data.tanggal },
+    { label: "Jenis Pekerjaan", value: data.jenis_pekerjaan },
     { label: "Bagian", value: data.bagian },
     { label: "Petugas", value: data.petugas },
     { label: "Deskripsi", value: data.deskripsi },

@@ -18,24 +18,54 @@ export default function RegisterPage() {
   const menuId = menuIdFromLocation || 1;  // Default to 1 if missing
 
   // Handling the register form submission
-  const handleRegister = (data) => {
-    if (data.error) {
-      setError(data.error);
+  const handleRegister = async (form) => {
+    if (form.error) {
+      setError(form.error);
       return;
     }
 
     setError("");
+    setMessage("");
     setLoading(true);
 
-    // Simulate registration process (e.g., API call)
-    setTimeout(() => {
-      setLoading(false);
-      console.log("Register data:", data);
+    try {
+      const response = await fetch(
+        "https://jungly-lathery-justin.ngrok-free.dev/api/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: form.username,
+            email: form.email,
+            phone: form.contact,
+            password: form.password,
+            password_confirmation: form.confirmPassword,
+          }),
+        }
+      );
 
-      setMessage("Akun berhasil dibuat!"); // Set success message
-      // Remove navigation logic, keeping the user on the page
-    }, 1500);  // Simulate API call delay
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError(result.message || "Register gagal, coba lagi.");
+        setLoading(false);
+        return;
+      }
+
+      // Register sukses
+      setMessage("Akun berhasil dibuat!");
+
+      console.log("Register success:", result);
+
+    } catch (error) {
+      setError("Terjadi kesalahan, periksa koneksi internet.");
+    } finally {
+      setLoading(false);
+    }
   };
+
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">

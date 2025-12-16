@@ -19,7 +19,7 @@ export default function TableRowLP({ item, onView, onDelete }) {
             Selesai
           </span>
         );
-      case "tidak dikerjakan":
+      case "Ditolak":
         return (
           <span className="px-3 py-1 rounded-full bg-red-500 text-white text-xs font-medium">
             Tidak Dikerjakan
@@ -47,9 +47,9 @@ export default function TableRowLP({ item, onView, onDelete }) {
       </td>
 
       {/* Jenis Pekerjaan */}
-      {item.JenisPekerjaan && (
+      {item.jenis_pekerjaan && (
         <td className="p-3 text-sm text-gray-600 font-medium">
-          {item.JenisPekerjaan}
+          {item.jenis_pekerjaan}
         </td>
       )}
 

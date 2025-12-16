@@ -1,24 +1,42 @@
 import React from "react";
-import MainLayoutAdmin from "../../layouts/MainLayoutAdmin";  // Pastikan ini sudah benar
+import { useLocation, useNavigate } from "react-router-dom";
+import MainLayoutAdmin from "../../layouts/MainLayoutAdmin";
 import DetailMaintenance from "@/components/LaporanPekerjaan/Maintenance/DetailMaintenance";
 
 export default function AdminDetailMaintenance() {
-  const maintenanceData = {
-    nomorForm: "PM-NET-01:2025",
-    tanggalPemeriksaan: "2025-08-27",
-    timPelaksana: "Tim Jaringan Diskominfo",
-    periodePelaksanaan: { mingguan: true },
-    areaLokasi: { setdaA: true },
-    pemeriksaanPerangkat: [
-      { komponen: "AC", pemeriksaan: "Kelistrikan", hasil: "ok", catatan: "OK" },
-    ],
-    ringkasanPertemuan: "Semua berjalan normal.",
-    rencanaTindakLanjut: "Monitor rutin.",
-  };
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Ambil data maintenance dari state
+  const maintenanceData = location.state?.maintenance;
+
+  if (!maintenanceData) {
+    return (
+      <MainLayoutAdmin>
+        <div className="p-6 text-center text-gray-500">
+          Data maintenance tidak tersedia.
+        </div>
+      </MainLayoutAdmin>
+    );
+  }
 
   return (
     <MainLayoutAdmin>
-      <DetailMaintenance data={maintenanceData} isAdmin={true} AdminLayout={MainLayoutAdmin} UserLayout={null} />
+      <div className="p-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="mb-4 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+        >
+          Kembali
+        </button>
+
+        <DetailMaintenance
+          data={maintenanceData}
+          isAdmin={true}
+          AdminLayout={MainLayoutAdmin}
+          UserLayout={null}
+        />
+      </div>
     </MainLayoutAdmin>
   );
 }

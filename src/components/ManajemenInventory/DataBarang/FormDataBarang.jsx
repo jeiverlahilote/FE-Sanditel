@@ -1,7 +1,7 @@
 // src/components/FormDataBarang.jsx
 import { useState, useEffect } from "react";
 
-export default function FormDataBarang({ onSubmit, onCancel, initialData, hideReset }) {
+export default function FormDataBarang({ onCancel, initialData, hideReset }) {
   const [formData, setFormData] = useState({
     idBarang: "B000008",
     namaBarang: "",
@@ -10,7 +10,9 @@ export default function FormDataBarang({ onSubmit, onCancel, initialData, hideRe
     stok: "",
   });
 
-  // Isi form jika ada data awal (edit)
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
   useEffect(() => {
     if (initialData) {
       setFormData(initialData);
@@ -23,36 +25,72 @@ export default function FormDataBarang({ onSubmit, onCancel, initialData, hideRe
   };
 
   const handleReset = () => {
-    if (initialData) {
-      setFormData(initialData); // reset ke data awal
-    } else {
+    if (initialData) setFormData(initialData);
+    else
       setFormData({
         idBarang: "B000008",
         namaBarang: "",
         jenisBarang: "",
         satuanBarang: "",
         stok: "",
-        harga: "",
       });
-    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    setLoading(true);
+    setError("");
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        "https://jungly-lathery-justin.ngrok-free.dev/api/data-barang",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+            "ngrok-skip-browser-warning": "true",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const result = await response.json();
+
+      // Handle 302 redirect atau error
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Gagal menyimpan data");
+      }
+
+      alert("Data Barang berhasil disimpan!");
+      if (onCancel) onCancel(); // kembali ke halaman sebelumnya
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-white p-4 sm:p-8 rounded-lg shadow-md w-full max-w-md sm:max-w-2xl mx-auto"
+      className="bg-white p-4 sm:p-8 rounded-lg shadow-md w-full max-w-md sm:max-w-2xl mx-auto space-y-4"
     >
       <h2 className="text-lg sm:text-2xl font-bold mb-4 sm:mb-6 text-center sm:text-left">
         {initialData ? "Form Edit Barang" : "Form Tambah Barang"}
       </h2>
 
+      {error && (
+        <div className="p-2 bg-red-100 text-red-700 rounded mb-2 text-sm">
+          {error}
+        </div>
+      )}
+
       {/* ID Barang */}
-      <div className="mb-4">
+      <div>
         <label className="block font-medium mb-1 text-sm sm:text-base">ID Barang</label>
         <input
           type="text"
@@ -64,7 +102,7 @@ export default function FormDataBarang({ onSubmit, onCancel, initialData, hideRe
       </div>
 
       {/* Nama Barang */}
-      <div className="mb-4">
+      <div>
         <label className="block font-medium mb-1 text-sm sm:text-base">Nama Barang</label>
         <input
           type="text"
@@ -73,17 +111,19 @@ export default function FormDataBarang({ onSubmit, onCancel, initialData, hideRe
           onChange={handleChange}
           placeholder="Nama Barang"
           className="w-full border rounded-lg px-3 py-2 text-sm sm:text-base"
+          required
         />
       </div>
 
       {/* Jenis Barang */}
-      <div className="mb-4">
+      <div>
         <label className="block font-medium mb-1 text-sm sm:text-base">Jenis Barang</label>
         <select
           name="jenisBarang"
           value={formData.jenisBarang}
           onChange={handleChange}
           className="w-full border rounded-lg px-3 py-2 text-sm sm:text-base"
+          required
         >
           <option value="">-- Pilih Jenis Barang --</option>
           <option value="Elektronik">Elektronik</option>
@@ -97,13 +137,14 @@ export default function FormDataBarang({ onSubmit, onCancel, initialData, hideRe
       </div>
 
       {/* Satuan Barang */}
-      <div className="mb-4">
+      <div>
         <label className="block font-medium mb-1 text-sm sm:text-base">Satuan Barang</label>
         <select
           name="satuanBarang"
           value={formData.satuanBarang}
           onChange={handleChange}
           className="w-full border rounded-lg px-3 py-2 text-sm sm:text-base"
+          required
         >
           <option value="">-- Pilih Satuan --</option>
           <option value="Unit">Unit</option>
@@ -114,7 +155,7 @@ export default function FormDataBarang({ onSubmit, onCancel, initialData, hideRe
       </div>
 
       {/* Stok */}
-      <div className="mb-4">
+      <div>
         <label className="block font-medium mb-1 text-sm sm:text-base">Stok</label>
         <input
           type="number"
@@ -123,6 +164,7 @@ export default function FormDataBarang({ onSubmit, onCancel, initialData, hideRe
           onChange={handleChange}
           placeholder="Masukkan jumlah stok"
           className="w-full border rounded-lg px-3 py-2 text-sm sm:text-base"
+          required
         />
       </div>
 
@@ -148,9 +190,12 @@ export default function FormDataBarang({ onSubmit, onCancel, initialData, hideRe
           </button>
           <button
             type="submit"
-            className="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
+            disabled={loading}
+            className={`w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition ${
+              loading ? "opacity-70 cursor-not-allowed" : ""
+            }`}
           >
-            Simpan
+            {loading ? "Menyimpan..." : "Simpan"}
           </button>
         </div>
       </div>

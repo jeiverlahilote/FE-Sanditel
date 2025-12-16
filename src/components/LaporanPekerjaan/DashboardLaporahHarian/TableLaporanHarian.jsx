@@ -31,6 +31,7 @@ export default function TableLaporanHarian({ title = "Laporan Harian", data = []
             <tr className="bg-blue-500 text-white text-xs sm:text-sm">
               <th className="p-2 sm:p-3 text-left w-[100px] whitespace-nowrap">Tanggal</th>
               <th className="p-2 sm:p-3 text-left">Pekerjaan</th>
+              <th className="p-2 sm:p-3 text-left">Bagian</th>
               <th className="p-2 sm:p-3 text-left w-[150px]">Petugas</th>
               {/* ⬇️ Left-align status header */}
               <th className="p-2 sm:p-3 w-[140px] text-left">Status</th>
@@ -54,10 +55,16 @@ export default function TableLaporanHarian({ title = "Laporan Harian", data = []
                       {toYYMMDD(row.tanggal)}
                     </td>
                     <td className="p-3 border-t border-gray-200">
-                      <span className="block truncate max-w-[180px] sm:max-w-none" title={row.pekerjaan}>
-                        {row.pekerjaan || "-"}
+                      <span className="block truncate max-w-[180px] sm:max-w-none" title={row.jenis_pekerjaan || row.jenis_pekerjaan}>
+                        {row.jenis_pekerjaan || "-"}
                       </span>
                     </td>
+                    <td className="p-3 border-t border-gray-200">
+                      <span className="block truncate max-w-[180px] sm:max-w-none" title={row.bagian || row.bagian}>
+                        {row.bagian || "-"}
+                      </span>
+                    </td>
+                    
                     <td className="p-3 border-t border-gray-200">
                       <span className="block truncate max-w-[140px] sm:max-w-none" title={petugas}>
                         {petugas}

@@ -184,32 +184,24 @@ export default function FormMaintenance2({ onSubmit, onCancel }) {
   };
 
   // ====== SUBMIT ======
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = (e) => {
+  e.preventDefault();
 
-    const payload = new FormData();
-
-    // kirim hasil sebagai 1 (ok) / 0 (tidak)
-    const layananMapped = formData.layananVirtualisasi.map((row) => ({
+  const payload = {
+    layananVirtualisasi: formData.layananVirtualisasi.map((row) => ({
       ...row,
-      hasil:
-        row.hasil === "ok" ? 1 : row.hasil === "tidak" ? 0 : row.hasil ?? "",
-    }));
-
-    const keamananMapped = formData.keamanan.map((row) => ({
+      hasil: row.hasil === "ok" ? 1 : row.hasil === "tidak" ? 0 : row.hasil ?? "",
+    })),
+    keamanan: formData.keamanan.map((row) => ({
       ...row,
-      hasil:
-        row.hasil === "ok" ? 1 : row.hasil === "tidak" ? 0 : row.hasil ?? "",
-    }));
-
-    payload.append(
-      "pemeriksaanLayananVirtualisasi",
-      JSON.stringify(layananMapped)
-    );
-    payload.append("pemeriksaanKeamanan", JSON.stringify(keamananMapped));
-
-    onSubmit(payload);
+      hasil: row.hasil === "ok" ? 1 : row.hasil === "tidak" ? 0 : row.hasil ?? "",
+    })),
   };
+
+  onSubmit(payload); // kirim dengan nama key yang sesuai
+};
+
+
 
   return (
     <form
