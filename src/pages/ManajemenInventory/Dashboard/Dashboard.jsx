@@ -83,12 +83,6 @@ export default function Dashboard() {
             icon={Warehouse}
             bgColor="linear-gradient(135deg, #FAD0D9 0%, #F5B6C3 100%)"
           />
-          <StatsCard
-            title="Total Pengguna"
-            value="17"
-            icon={Users}
-            bgColor="linear-gradient(135deg, #CFC9F9 0%, #AFA8F9 100%)"
-          />
         </div>
 
         {/* Grafik */}
