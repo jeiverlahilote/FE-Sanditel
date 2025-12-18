@@ -1,5 +1,4 @@
-// SidebarAdminPekerjaan.jsx
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useState } from "react";
 import {
   FaBars,
@@ -12,15 +11,15 @@ import {
 
 export default function SidebarAdminPekerjaan() {
   const navigate = useNavigate();
+  const location = useLocation();  // 🔹 Menambahkan useLocation untuk mendapatkan path saat ini
   const [isOpen, setIsOpen] = useState(false); // state sidebar untuk mobile
 
   const menus = [
-  { name: "Admin Dashboard", icon: <FaChartPie />, path: "/admin-dashboard-pekerjaan" },
-  { name: "Admin Pekerjaan", icon: <FaTasks />, path: "/admin-pekerjaan" },
-  { name: "Admin Laporan", icon: <FaFileAlt />, path: "/admin-laporan" },
-  { name: "Admin Maintenance", icon: <FaTools />, path: "/admin-maintenance" },
-];
-
+    { name: "Admin Dashboard", icon: <FaChartPie />, path: "/admin-dashboard-pekerjaan" },
+    { name: "Admin Pekerjaan", icon: <FaTasks />, path: "/admin-pekerjaan" },
+    { name: "Admin Laporan", icon: <FaFileAlt />, path: "/admin-laporan" },
+    { name: "Admin Maintenance", icon: <FaTools />, path: "/admin-maintenance" },
+  ];
 
   return (
     <>
@@ -63,7 +62,7 @@ export default function SidebarAdminPekerjaan() {
         </div>
 
         {/* Tombol Kembali Mobile */}
-        {isOpen && (
+        {/* {isOpen && (
           <div className="lg:hidden p-4 border-b">
             <button
               className="flex items-center gap-2 text-gray-700 font-medium hover:text-blue-600 transition-colors"
@@ -76,17 +75,18 @@ export default function SidebarAdminPekerjaan() {
               <span>Kembali ke Menu</span>
             </button>
           </div>
-        )}
+        )} */}
 
         {/* Menu List */}
         <ul className="p-4 space-y-4 overflow-y-auto max-h-[calc(100vh-60px)]">
           {menus.map((menu) => (
             <li
               key={menu.path}
-              className="flex items-center gap-3 p-2 rounded-md hover:bg-blue-100 cursor-pointer transition-colors"
+              className={`flex items-center gap-3 p-2 rounded-md cursor-pointer transition-colors
+                hover:bg-blue-100`}
               onClick={() => {
                 setIsOpen(false);
-                navigate(menu.path);
+                navigate(menu.path); // Fixed onClick event
               }}
             >
               {menu.icon}

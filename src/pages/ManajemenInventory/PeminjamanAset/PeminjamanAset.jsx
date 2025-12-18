@@ -1,91 +1,132 @@
 // src/pages/ManajemenInventory/PeminjamanAset/PeminjamanAset.jsx
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Printer, Plus, CopyPlus } from "lucide-react";
 
 import MainLayout from "../../../layouts/MainLayout";
 import Table from "../../../components/ManajemenInventory/DataBarang/Table";
-import PrintTable from "../../../components/Shared/PrintTable"; // 🔹 komponen cetak
+import PrintTable from "../../../components/Shared/PrintTable";
 
 export default function PeminjamanAset() {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState("");
-
-  const [peminjamanAset] = useState([
-    {
-      number: 1,
-      aset: "TL-SG1024D / TP-LINK ()",
-      peminjam: "Biro Bia",
-      bagian: "BKD",
-      tglPinjam: "10-07-2025",
-      tglKembali: "31-07-2025",
-      jumlah: 1,
-      sisaStok: 0,
-    },
-    {
-      number: 2,
-      aset: "Dell Laptop Latitude 3420",
-      peminjam: "Budi",
-      bagian: "Bagian IT",
-      tglPinjam: "12-07-2025",
-      tglKembali: "25-07-2025",
-      jumlah: 2,
-      sisaStok: 3,
-    },
-    {
-      number: 3,
-      aset: "Proyektor Epson X500",
-      peminjam: "Sinta",
-      bagian: "Biro Umum",
-      tglPinjam: "15-07-2025",
-      tglKembali: "30-07-2025",
-      jumlah: 1,
-      sisaStok: 1,
-    },
-    {
-      number: 4,
-      aset: "Kursi Kantor Ergonomic",
-      peminjam: "Andi",
-      bagian: "Divisi HRD",
-      tglPinjam: "18-07-2025",
-      tglKembali: "01-08-2025",
-      jumlah: 5,
-      sisaStok: 10,
-    },
-    {
-      number: 5,
-      aset: "Meja Rapat Kayu Jati",
-      peminjam: "Rina",
-      bagian: "Divisi Keuangan",
-      tglPinjam: "20-07-2025",
-      tglKembali: "05-08-2025",
-      jumlah: 3,
-      sisaStok: 2,
-    },
-    {
-      number: 6,
-      aset: "Printer Laser HP MFP",
-      peminjam: "Dewi",
-      bagian: "Divisi Pemasaran",
-      tglPinjam: "22-07-2025",
-      tglKembali: "06-08-2025",
-      jumlah: 1,
-      sisaStok: 4,
-    },
-    {
-      number: 7,
-      aset: "Whiteboard Magnetik",
-      peminjam: "Agus",
-      bagian: "Divisi Riset",
-      tglPinjam: "25-07-2025",
-      tglKembali: "10-08-2025",
-      jumlah: 2,
-      sisaStok: 3,
-    },
-  ]);
 
   const pageTitle = "Data Peminjaman Aset";
 
+  // State
+  const [search, setSearch] = useState("");
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    aset: [],
+    bagian: [],
+  });
+
+  const [peminjamanAset, setPeminjamanAset] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem("token");
+  useEffect(() => {
+  const fetchPeminjamanAset = async () => {
+    try {
+      setLoading(true);
+      
+      const response = await fetch(
+        "https://jungly-lathery-justin.ngrok-free.dev/api/peminjaman-aset", 
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "ngrok-skip-browser-warning": "true",
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          }
+      );
+
+      const result = await response.json();
+
+      // 🔁 Transform API response → format tabel
+      const mappedData = result.flatMap((header, headerIndex) =>
+        header.details.map((detail, detailIndex) => ({
+          number: `${headerIndex + 1}.${detailIndex + 1}`,
+          aset: `${detail.nama_barang} / ${detail.merk_kode}`,
+          peminjam: header.nama_peminjam,
+          bagian: header.bagian,
+          tglPinjam: header.tgl_pinjam,
+          tglKembali: header.tgl_kembali,
+          jumlah: detail.jumlah,
+          sisaStok: detail.sisa_stok,
+        }))
+      );
+
+      setPeminjamanAset(mappedData);
+    } catch (error) {
+      console.error("Gagal mengambil data peminjaman aset:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchPeminjamanAset();
+}, []);
+
+
+  const headers = [ 
+    "No",
+    "Nama Aset",
+    "Peminjam",
+    "Bagian",
+    "Tanggal Pinjam",
+    "Tanggal Kembali",
+    "Jumlah",
+    "Sisa Stok",
+    "Aksi",
+  ];
+
+  // Definisikan custom filters untuk Table
+  const customFilters = [
+    {
+      name: "aset",
+      label: "Nama Aset",
+      options: [
+        "TL-SG1024D / TP-LINK",
+        "Dell Laptop Latitude 3420",
+        "Proyektor Epson X500",
+      ],
+    },
+    {
+      name: "bagian",
+      label: "Bagian",
+      options: [
+        "Bagian IT",
+        "Biro Umum",
+        "Divisi HRD",
+      ],
+    },
+  ];
+
+  // Filter pencarian dan filter berdasarkan kategori
+  const filteredData = useMemo(() => {
+    let filtered = peminjamanAset.filter((item) => {
+      const searchMatch = Object.values(item)
+        .join(" ")
+        .toLowerCase()
+        .includes(search.toLowerCase());
+      return searchMatch;
+    });
+
+    // Apply aset filter
+    if (filters.aset.length > 0) {
+      filtered = filtered.filter((item) => filters.aset.includes(item.aset));
+    }
+
+    // Apply bagian filter
+    if (filters.bagian.length > 0) {
+      filtered = filtered.filter((item) => filters.bagian.includes(item.bagian));
+    }
+
+    return filtered;
+  }, [peminjamanAset, search, filters]);
+
+  // Handlers
   const handleTambah = () => navigate("/add-peminjaman-aset");
   const handleTambahMultiple = () => navigate("/peminjaman-multiple");
   const handlePrint = () => window.print();
@@ -93,13 +134,21 @@ export default function PeminjamanAset() {
     alert(`Aset dengan nomor ${peminjamanAset[index].number} dikembalikan`);
   };
 
-  // 🔹 Data terfilter (dipakai untuk mobile & print)
-  const filteredData = peminjamanAset.filter(
-    (item) =>
-      item.aset.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.peminjam.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.bagian.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // Fungsi untuk mengubah filter
+  const handleFilterChange = (filterName, value) => {
+    setFilters((prevFilters) => {
+      const updatedFilters = { ...prevFilters };
+      const selectedFilter = updatedFilters[filterName];
+      if (selectedFilter.includes(value)) {
+        updatedFilters[filterName] = selectedFilter.filter(
+          (item) => item !== value
+        );
+      } else {
+        updatedFilters[filterName] = [...selectedFilter, value];
+      }
+      return updatedFilters;
+    });
+  };
 
   return (
     <MainLayout>
@@ -119,20 +168,20 @@ export default function PeminjamanAset() {
               <span className="hidden sm:inline">Cetak</span>
             </button>
 
-            <button
+            {/* <button
               onClick={handleTambah}
               className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded shadow transition w-10 h-10 sm:w-auto sm:h-auto"
             >
               <Plus size={18} />
               <span className="hidden sm:inline">Tambah</span>
-            </button>
+            </button> */}
 
             <button
               onClick={handleTambahMultiple}
-              className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded shadow transition w-10 h-10 sm:w-auto sm:h-auto"
+              className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white px-3 py-2 rounded shadow transition w-10 h-10 sm:w-auto sm:h-auto"
             >
               <CopyPlus size={18} />
-              <span className="hidden sm:inline">Peminjaman Multiple</span>
+              <span className="hidden sm:inline">Tambah Data Peminjaman</span>
             </button>
           </div>
         </div>
@@ -142,8 +191,8 @@ export default function PeminjamanAset() {
           <input
             type="text"
             placeholder="Cari aset..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg shadow-sm focus:outline-none text-sm"
           />
           <svg
@@ -161,96 +210,85 @@ export default function PeminjamanAset() {
           </svg>
         </div>
 
-        {/* Card View (Mobile) */}
-        <div className="block sm:hidden space-y-3">
-          {filteredData.map((item, idx) => (
-            <div
-              key={idx}
-              className="border rounded-lg shadow-sm p-3 bg-gray-50"
+        {/* Filter Mobile */}
+        <div className="sm:hidden mb-4">
+          <div className="relative">
+            <button
+              type="button"
+              onClick={() => setIsFilterOpen((prev) => !prev)}
+              className="px-4 py-2 text-sm border border-gray-300 rounded-lg shadow-sm bg-white flex items-center gap-2"
             >
-              <div className="flex justify-between items-center mb-1">
-                <div className="font-bold text-gray-800">{item.aset}</div>
-                <span className="text-sm text-gray-500">#{item.number}</span>
-              </div>
+              Filter
+              <span className="text-xs">▼</span>
+            </button>
 
-              <div className="text-sm text-gray-600">
-                Peminjam: {item.peminjam}
-              </div>
-              <div className="text-sm text-gray-600">Bagian: {item.bagian}</div>
-              <div className="text-sm text-gray-600">
-                Tgl Pinjam: {item.tglPinjam}
-              </div>
-              <div className="text-sm text-gray-600">
-                Tgl Kembali: {item.tglKembali}
-              </div>
-              <div className="text-sm text-gray-600">Jumlah: {item.jumlah}</div>
-              <div className="text-sm text-gray-600">
-                Sisa Stok:{" "}
-                <span
-                  className={`px-2 py-0.5 rounded text-xs font-semibold ${
-                    item.sisaStok > 0
-                      ? "bg-green-100 text-green-700"
-                      : "bg-red-100 text-red-700"
-                  }`}
-                >
-                  {item.sisaStok}
-                </span>
-              </div>
+            {isFilterOpen && (
+              <div className="absolute mt-2 w-80 bg-white border border-gray-200 rounded-lg shadow-lg z-20 p-4">
+                <div className="mb-2 text-sm font-semibold text-gray-700">Filter</div>
+                {customFilters.map((filter) => (
+                  <div key={filter.name} className="border border-gray-200 rounded-lg p-3 mb-3">
+                    <div className="text-xs font-semibold text-gray-700 mb-2">
+                      {filter.label}
+                    </div>
+                    <div className="max-h-40 overflow-y-auto">
+                      {filter.options.map((opt) => (
+                        <label
+                          key={opt}
+                          className="flex items-center gap-2 text-xs mb-1 cursor-pointer"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={filters[filter.name]?.includes(opt)}
+                            onChange={() => handleFilterChange(filter.name, opt)}
+                            className="rounded border-gray-300"
+                          />
+                          {opt}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                ))}
 
-              <div className="mt-2">
-                <button
-                  onClick={() => handleKembalikan(idx)}
-                  className="w-full bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded shadow text-sm"
-                >
-                  Kembalikan
-                </button>
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setIsFilterOpen(false)}
+                    className="px-4 py-1.5 text-xs rounded-lg bg-blue-500 text-white font-medium"
+                  >
+                    Apply
+                  </button>
+                </div>
               </div>
-            </div>
-          ))}
+            )}
+          </div>
         </div>
 
-        {/* Table View (Desktop) */}
-        <div className="hidden sm:block overflow-x-auto">
-          <Table
-            headers={[
-              "No",
-              "Nama Aset",
-              "Peminjam",
-              "Bagian",
-              "Tanggal Pinjam",
-              "Tanggal Kembali",
-              "Jumlah",
-              "Sisa Stok",
-              "Aksi",
-            ]}
-          >
-            {peminjamanAset.map((item, idx) => (
-              <tr
+        {/* Card View (Mobile) */}
+        <div className="block sm:hidden space-y-3">
+          {filteredData.length > 0 ? (
+            filteredData.map((item, idx) => (
+              <div
                 key={idx}
-                className="border-b hover:bg-gray-50 transition-colors"
+                className="border rounded-lg shadow-sm p-3 bg-gray-50"
               >
-                <td className="p-3 text-sm font-semibold text-gray-800">
-                  {item.number}
-                </td>
-                <td className="p-3 text-sm text-gray-600 font-medium">
-                  {item.aset}
-                </td>
-                <td className="p-3 text-sm text-gray-600 font-medium">
-                  {item.peminjam}
-                </td>
-                <td className="p-3 text-sm text-gray-600 font-medium">
-                  {item.bagian}
-                </td>
-                <td className="p-3 text-sm text-gray-600 font-medium whitespace-nowrap">
-                  {item.tglPinjam}
-                </td>
-                <td className="p-3 text-sm text-gray-600 font-medium whitespace-nowrap">
-                  {item.tglKembali}
-                </td>
-                <td className="p-3 text-sm text-gray-600 font-medium">
-                  {item.jumlah}
-                </td>
-                <td className="p-3 text-sm text-gray-600 font-medium">
+                <div className="flex justify-between items-center mb-1">
+                  <div className="font-bold text-gray-800">{item.aset}</div>
+                  <span className="text-sm text-gray-500">#{item.number}</span>
+                </div>
+
+                <div className="text-sm text-gray-600">
+                  Peminjam: {item.peminjam}
+                </div>
+                <div className="text-sm text-gray-600">Bagian: {item.bagian}</div>
+                <div className="text-sm text-gray-600">
+                  Tgl Pinjam: {item.tglPinjam}
+                </div>
+                <div className="text-sm text-gray-600">
+                  Tgl Kembali: {item.tglKembali}
+                </div>
+                <div className="text-sm text-gray-600">Jumlah: {item.jumlah}</div>
+                <div className="text-sm text-gray-600">
+                  Sisa Stok:{" "}
                   <span
                     className={`px-2 py-0.5 rounded text-xs font-semibold ${
                       item.sisaStok > 0
@@ -260,22 +298,96 @@ export default function PeminjamanAset() {
                   >
                     {item.sisaStok}
                   </span>
-                </td>
-                <td className="p-3">
+                </div>
+
+                <div className="mt-2">
                   <button
                     onClick={() => handleKembalikan(idx)}
-                    className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded shadow text-sm"
+                    className="w-full bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded shadow text-sm"
                   >
                     Kembalikan
                   </button>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p className="text-center py-4 text-gray-500 italic">
+              Data Kosong Tidak Tersedia
+            </p>
+          )}
+        </div>
+
+        {/* Table View (Desktop) */}
+        <div className="hidden sm:block overflow-x-auto">
+          <Table
+            headers={headers}
+            search={search}
+            setSearch={setSearch}
+            customFilters={customFilters}
+          >
+            {filteredData.length > 0 ? (
+              filteredData.map((item, idx) => (
+                <tr
+                  key={idx}
+                  className="border-b hover:bg-gray-50 transition-colors"
+                >
+                  <td className="p-3 text-sm font-semibold text-gray-800">
+                    {item.number}
+                  </td>
+                  <td className="p-3 text-sm text-gray-600 font-medium">
+                    {item.aset}
+                  </td>
+                  <td className="p-3 text-sm text-gray-600 font-medium">
+                    {item.peminjam}
+                  </td>
+                  <td className="p-3 text-sm text-gray-600 font-medium">
+                    {item.bagian}
+                  </td>
+                  <td className="p-3 text-sm text-gray-600 font-medium whitespace-nowrap">
+                    {item.tglPinjam}
+                  </td>
+                  <td className="p-3 text-sm text-gray-600 font-medium whitespace-nowrap">
+                    {item.tglKembali}
+                  </td>
+                  <td className="p-3 text-sm text-gray-600 font-medium">
+                    {item.jumlah}
+                  </td>
+                  <td className="p-3 text-sm text-gray-600 font-medium">
+                    <span
+                      className={`px-2 py-0.5 rounded text-xs font-semibold ${
+                        item.sisaStok > 0
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                      }`}
+                    >
+                      {item.sisaStok}
+                    </span>
+                  </td>
+                  <td className="p-3">
+                    <button
+                      onClick={() => handleKembalikan(idx)}
+                      className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded shadow text-sm"
+                    >
+                      Kembalikan
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td
+                  colSpan={headers.length}
+                  className="text-center py-4 text-gray-500 italic"
+                >
+                  Data Kosong Tidak Tersedia
                 </td>
               </tr>
-            ))}
+            )}
           </Table>
         </div>
       </div>
 
-      {/* 🔹 CETAK: pakai komponen PrintTable */}
+      {/* CETAK: pakai komponen PrintTable */}
       <PrintTable
         printId="print-peminjaman-aset"
         title={pageTitle}

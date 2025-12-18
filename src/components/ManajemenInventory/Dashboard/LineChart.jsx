@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LineChart as LC,
   Line,
@@ -10,39 +10,96 @@ import {
   Legend,
 } from "recharts";
 
-// Dummy data line chart
-const lineData = {
-  2024: [
-    { name: "Jan", masuk: 15, keluar: 25 },
-    { name: "Feb", masuk: 25, keluar: 30 },
-    { name: "Mar", masuk: 50, keluar: 40 },
-    { name: "Apr", masuk: 70, keluar: 35 },
-    { name: "Mei", masuk: 60, keluar: 80 },
-    { name: "Jun", masuk: 90, keluar: 55 },
-    { name: "Jul", masuk: 45, keluar: 60 },
-    { name: "Agu", masuk: 75, keluar: 70 },
-  ],
-  2025: [
-    { name: "Jan", masuk: 20, keluar: 40 },
-    { name: "Feb", masuk: 30, keluar: 35 },
-    { name: "Mar", masuk: 45, keluar: 25 },
-    { name: "Apr", masuk: 65, keluar: 30 },
-    { name: "Mei", masuk: 70, keluar: 50 },
-    { name: "Jun", masuk: 85, keluar: 45 },
-    { name: "Jul", masuk: 60, keluar: 55 },
-    { name: "Agu", masuk: 95, keluar: 65 },
-  ],
-};
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 
 export default function LineChartComponent() {
-  const years = Object.keys(lineData);
-  const [year, setYear] = useState("2025");
-  const data = lineData[year];
+  const token = localStorage.getItem("token");
+
+  const [lineData, setLineData] = useState({});
+  const [year, setYear] = useState("");
+
+  useEffect(() => {
+    if (!token) return;
+
+    const headers = {
+      Authorization: `Bearer ${token}`,
+      "ngrok-skip-browser-warning": "true",
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    };
+
+    const fetchData = async () => {
+      try {
+        const [resMasuk, resKeluar] = await Promise.all([
+          fetch(
+            "https://jungly-lathery-justin.ngrok-free.dev/api/barang-masuk",
+            { headers }
+          ),
+          fetch(
+            "https://jungly-lathery-justin.ngrok-free.dev/api/barang-keluar",
+            { headers }
+          ),
+        ]);
+
+        const jsonMasuk = await resMasuk.json();
+        const jsonKeluar = await resKeluar.json();
+
+        const dataMasuk = jsonMasuk.data ?? jsonMasuk;
+        const dataKeluar = jsonKeluar.data ?? jsonKeluar;
+
+        const result = {};
+
+        // 🔹 INIT TAHUN & BULAN
+        const initYearMonth = (tahun) => {
+          if (!result[tahun]) {
+            result[tahun] = MONTHS.map((m) => ({
+              name: m,
+              masuk: 0,
+              keluar: 0,
+            }));
+          }
+        };
+
+        // 🔹 BARANG MASUK
+        dataMasuk.forEach((item) => {
+          const date = new Date(item.tgl_masuk); // ⚠️ cek field
+          const tahun = date.getFullYear();
+          const bulan = date.getMonth();
+
+          initYearMonth(tahun);
+          result[tahun][bulan].masuk += Number(item.jumlah_masuk || 0); // ⚠️ cek field
+        });
+
+        // 🔹 BARANG KELUAR
+        dataKeluar.forEach((item) => {
+          const date = new Date(item.tgl_keluar); // ⚠️ cek field
+          const tahun = date.getFullYear();
+          const bulan = date.getMonth();
+
+          initYearMonth(tahun);
+          result[tahun][bulan].keluar += Number(item.jumlah_keluar || 0); // ⚠️ cek field
+        });
+
+        setLineData(result);
+
+        // default tahun terbaru
+        const years = Object.keys(result).sort((a, b) => b - a);
+        if (years.length) setYear(years[0]);
+      } catch (err) {
+        console.error("Gagal ambil data line chart:", err);
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  const years = Object.keys(lineData).sort((a, b) => b - a);
+  const data = lineData[year] || [];
 
   return (
     <div className="bg-white p-3 sm:p-4 rounded-lg shadow">
-      {/* Header dengan judul & dropdown tahun */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-2">
+      {/* Header */}
+      <div className="flex justify-between items-center mb-4">
         <h3 className="font-bold text-sm sm:text-base">
           Total Transaksi ({year})
         </h3>
@@ -59,7 +116,7 @@ export default function LineChartComponent() {
         </select>
       </div>
 
-      {/* Line chart */}
+      {/* Chart */}
       <ResponsiveContainer width="100%" height={220}>
         <LC data={data}>
           <CartesianGrid strokeDasharray="3 3" />

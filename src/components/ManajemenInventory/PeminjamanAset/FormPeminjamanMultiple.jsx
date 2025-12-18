@@ -39,10 +39,66 @@ export default function FormPeminjamanMultiple({ onSubmit, onCancel }) {
     setFormData((prev) => ({ ...prev, barang: updatedBarang }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+
+    const payload = {
+      peminjam: formData.peminjam,
+      bagian: formData.bagian,
+      tglPinjam: formData.tanggalPinjam,
+      tglKembali: formData.tanggalKembali,
+      items: formData.barang.map((item) => ({
+        namaBarang: item.namaBarang,
+        merkKode: item.merkKode,
+        jumlah: Number(item.jumlah),
+        sisaStok: Number(item.sisaStok),
+      })),
+    };
+
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await fetch(
+        "https://jungly-lathery-justin.ngrok-free.dev/api/peminjaman-aset",
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "ngrok-skip-browser-warning": "true",
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        console.error("Validation Error:", result);
+        throw new Error(result.message || "Gagal menyimpan data peminjaman");
+      }
+
+      alert("Peminjaman berhasil disimpan ✅");
+
+      // reset form
+      setFormData({
+        peminjam: "",
+        bagian: "",
+        tanggalPinjam: "",
+        tanggalKembali: "",
+        barang: [{ namaBarang: "", merkKode: "", jumlah: "", sisaStok: "" }],
+      });
+
+      if (onSubmit) onSubmit(result);
+
+    } catch (error) {
+      console.error("Error submit peminjaman:", error);
+      alert("Terjadi kesalahan saat menyimpan data ❌");
+    }
   };
+  
+
 
   return (
     <form

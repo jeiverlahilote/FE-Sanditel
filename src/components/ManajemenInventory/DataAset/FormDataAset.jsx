@@ -5,6 +5,7 @@ export default function FormDataAset({ onSubmit, onCancel }) {
   const [formData, setFormData] = useState({
     assetName: "",
     brandCode: "",
+    jumlah: "",
     category: "",
     status: "",
     barcodeUpdateLog: "",
@@ -28,10 +29,49 @@ export default function FormDataAset({ onSubmit, onCancel }) {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    onSubmit(formData);
-  };
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  try {
+    const token = localStorage.getItem("token"); // sesuaikan penyimpanan token
+
+    const response = await fetch(
+      "https://jungly-lathery-justin.ngrok-free.dev/api/data-aset",
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "ngrok-skip-browser-warning": "true",
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          assetName: formData.assetName,
+          brandCode: formData.brandCode,
+          category: formData.category,
+          jumlah: Number(formData.jumlah),
+          status: formData.status,
+          barcodeUpdateLog: formData.barcodeUpdateLog,
+        }),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Gagal menyimpan data");
+    }
+
+    alert("Data aset berhasil disimpan");
+    handleReset();
+    onSubmit?.(result);
+
+  } catch (error) {
+    console.error("Error submit:", error);
+    alert(error.message);
+  }
+};
+
 
   return (
     <form
@@ -81,11 +121,28 @@ export default function FormDataAset({ onSubmit, onCancel }) {
                      focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">-- Pilih Kategori --</option>
-          <option value="Electronics">Electronics</option>
-          <option value="Furniture">Furniture</option>
-          <option value="Other">Other</option>
+          <option value="Access Point">Access Point</option>
+          <option value="Router">Router</option>
+          <option value="Switch">Switch</option>  
         </select>
       </div>
+      
+      {/* Jumlah Aset */}
+      <div className="mb-4">
+        <label className="block font-medium mb-1">Jumlah Aset</label>
+        <input
+          type="number"
+          name="jumlah"
+          value={formData.jumlah}
+          onChange={handleChange}
+          placeholder="Masukkan jumlah aset"
+          min="1"
+          className="w-full border rounded-lg px-3 py-2
+                    focus:outline-none focus:ring-2 focus:ring-indigo-500"
+          required
+        />
+      </div>
+
 
       {/* Status */}
       <div className="mb-4">
@@ -98,8 +155,8 @@ export default function FormDataAset({ onSubmit, onCancel }) {
                      focus:outline-none focus:ring-2 focus:ring-indigo-500"
         >
           <option value="">-- Pilih Status --</option>
-          <option value="Active">Aktif</option>
-          <option value="Inactive">Tidak Aktif</option>
+          <option value="Aktif">Aktif</option>
+          <option value="Tidak Aktif">Tidak Aktif</option>
         </select>
       </div>
 
