@@ -332,14 +332,14 @@ export default function DataAset() {
                   >
                     <Pencil size={14} /> Edit
                   </button>
-                  <button
+                  {/* <button
                     onClick={() =>
                       alert(`Cek barcode untuk ${item.name} - Kode: ${item.brandCode}`)
                     }
                     className="flex items-center gap-1 px-3 py-1 bg-green-100 hover:bg-green-200 text-green-700 rounded text-sm"
                   >
                     <QrCode size={14} /> Barcode
-                  </button>
+                  </button> */}
                   <button
                     onClick={() => handleDelete(item.number)}
                     className="flex items-center gap-1 px-3 py-1 bg-red-100 hover:bg-red-200 text-red-700 rounded text-sm"
@@ -389,9 +389,9 @@ export default function DataAset() {
                   item={item}
                   onEdit={() => navigate(`/edit-data-aset/${item.number}`)}
                   onDelete={() => handleDelete(item.number)}
-                  onCheckBarcode={() =>
-                    alert(`Cek barcode untuk ${item.name} - Kode: ${item.brandCode}`)
-                  }
+                  // onCheckBarcode={() =>
+                  //   alert(`Cek barcode untuk ${item.name} - Kode: ${item.brandCode}`)
+                  // }
                 />
               ))
             ) : (
