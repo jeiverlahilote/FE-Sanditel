@@ -20,7 +20,6 @@ const defaultMenus = [
   { name: "Barang Masuk", icon: <FaSignInAlt />, path: "/barang-masuk" },
   { name: "Barang Keluar", icon: <FaSignOutAlt />, path: "/barang-keluar" },
   { name: "Peminjaman Aset", icon: <FaExchangeAlt />, path: "/peminjaman-aset" },
-  { name: "Stok Opname", icon: <FaBoxes />, path: "/stok-opname" },
 ];
 
 export default function Sidebar({

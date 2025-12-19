@@ -193,24 +193,24 @@ export default function DataAset() {
             </button>
 
             {/* Sort - Tombol ini tetap untuk sortir kategori (fungsi berbeda) */}
-            <button
+            {/* <button
               onClick={() => navigate("/kategori")}
               className="flex items-center justify-center bg-gray-500 hover:bg-gray-600 text-white px-3 py-2 rounded shadow transition w-10 h-10 sm:w-auto sm:h-auto"
               title="Sortir berdasarkan kategori"
             >
               <Tags size={18} />
               <span className="hidden sm:inline ml-1">Kategori</span>
-            </button>
+            </button> */}
 
             {/* Scan Barcode */}
-            <button
+            {/* <button
               onClick={() => navigate("/stok-opname")}
               className="flex items-center justify-center bg-green-500 hover:bg-green-600 text-white px-3 py-2 rounded shadow transition w-10 h-10 sm:w-auto sm:h-auto"
               title="Scan Barcode"
             >
               <Barcode size={18} />
               <span className="hidden sm:inline ml-1">Scan Barcode</span>
-            </button>
+            </button> */}
           </div>
         </div>
 

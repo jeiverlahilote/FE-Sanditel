@@ -20,6 +20,10 @@ export default function AdminLaporan() {
   const [dataLaporan, setDataLaporan] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const formatTanggal = (dateString) => {
+    if (!dateString) return "-";
+    return dateString.split("T")[0];
+  };
 
   // Fetch seluruh data laporan dari API
   useEffect(() => {
@@ -44,7 +48,7 @@ export default function AdminLaporan() {
         // Map data dari API ke format yang sama dengan TableRowLP
         const mappedData = result.data.map((item, index) => ({
           No: item.id, // atau item.id_pekerjaan kalau mau ID custom
-          HariTanggal: item.tanggal || item.HariTanggal,
+          HariTanggal: formatTanggal(item.tanggal || item.HariTanggal),
           JenisPekerjaan: item.jenis_pekerjaan || item.jenis_pekerjaan,
           Bagian: item.bagian || item.bagian,
           Petugas: item.petugas || item.Petugas,

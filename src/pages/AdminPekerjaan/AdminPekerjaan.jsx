@@ -17,6 +17,11 @@ export default function AdminPekerjaan() {
   const [dataPekerjaan, setDataPekerjaan] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const formatTanggal = (dateString) => {
+    if (!dateString) return "-";
+    return dateString.split("T")[0];
+  };
+
   // Fetch data dari API
   useEffect(() => {
     const fetchPekerjaan = async () => {
@@ -41,7 +46,7 @@ export default function AdminPekerjaan() {
           .filter((item) => item.status.toLowerCase() === "dikerjakan")
           .map((item, index) => ({
             No: index + 1,
-            HariTanggal: item.tanggal,
+            HariTanggal: formatTanggal(item.tanggal),
             JenisPekerjaan: item.jenis_pekerjaan || item.pekerjaan || "-",
             Bagian: item.bagian || "-",
             Petugas: item.petugas || "-",
